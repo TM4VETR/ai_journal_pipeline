@@ -28,7 +28,6 @@ If you use this code, please cite:
 ```
 
 ## Pipeline
-The document processing pipeline is located in the *pipeline* subfolder and based on OCR4All. 
 You can build and run the Docker containers by:
 
 ```
@@ -36,15 +35,30 @@ docker compose build
 docker compose up -d
 ```
 
-After the containers are running, open:
-* OCR4All UI: http://localhost:8080
-* Neo4j Browser: http://localhost:7474 (default credentials: neo4j / secret)
+After the containers are running, you can open:
+* Web interface: http://localhost:5000/upload
+* OCR4All: http://localhost:8080
+* Neo4j: http://localhost:7474
+
+OCR4All expects a specific folder structure for project. You can create the necessary folders by once executing:
+
+```
+create_folder_structure.cmd
+```
+
+
+### Environment variables
+You can set environment variables in a `.env` file in the root directory. These will be loaded using *dotenv*.
+
+To get started, you can simply copy the provided *template.env* file to *.env* and modify the variables as needed.
+
+### NER model
+The model for Named Entity Recognition (NER) needs to be copied into the `custom/models` folder manually.
+
 
 ## Evaluation
 The evaluation scripts are located in the *evaluation* subfolder.
 
-<ToDo>
 
 ## Contact
-
 For questions or collaboration, please contact [Alexander Esser](mailto:alexander.esser@bibb.de). 

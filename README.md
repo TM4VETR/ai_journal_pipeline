@@ -25,18 +25,27 @@ If you use this code, please cite:
 }
 ```
 
-## Pipeline
-You can build and run the Docker containers by:
+## Getting started
 
-```
-docker compose build
-docker compose up -d
+### Environment variables
+You can set environment variables in a `.env` file in the root directory. These will be loaded using *dotenv*.  
+To get started, you can simply copy the provided *template.env* file to *.env* and modify the variables as needed.
+
+
+### Required data
+The occupation coding module requires the list of occupations provided by the Federal Employment Agency of Germany (Bundesagentur für Arbeit): [Gesamtberufsliste_der_BA.xlsx](https://rest.arbeitsagentur.de/infosysbub/download-portal-rest/ct/dkz-downloads/Gesamtberufsliste_der_BA.xlsx)
+
+You can download it by running
+```bash
+cd custom/oc
+python -m utils.data_util
 ```
 
-After the containers are running, you can open:
-* Web interface: http://localhost:5000/upload
-* OCR4All: http://localhost:8080
-* Neo4j: http://localhost:7474
+### NER model
+The model for Named Entity Recognition (NER) needs to be copied into the `custom/models` folder manually.
+
+
+### Folder structure
 
 OCR4All expects a specific folder structure for project. You can create the necessary folders by once executing:
 
@@ -45,13 +54,18 @@ create_folder_structure.cmd
 ```
 
 
-### Environment variables
-You can set environment variables in a `.env` file in the root directory. These will be loaded using *dotenv*.
+## Pipeline
+You can build and run the Docker containers by:
 
-To get started, you can simply copy the provided *template.env* file to *.env* and modify the variables as needed.
+```
+docker compose build
+docker compose up -d
+```
 
-### NER model
-The model for Named Entity Recognition (NER) needs to be copied into the `custom/models` folder manually.
+When the containers are running, you can open:
+* Web interface: http://localhost:5000/upload
+* OCR4All: http://localhost:8080
+* Neo4j: http://localhost:7474
 
 
 ## Evaluation

@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2 class="mb-4">Upload Document</h2>
+
+    <form id="uploadForm" action="" method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+
+        <!-- Drag & Drop Area -->
+        <div id="drop-area" class="border border-primary border-2 rounded p-5 text-center mb-4 bg-light">
+            <p id="drop-text-default" class="mb-2 fs-5">Please drag and drop file</p>
+            <p class="text-muted mb-3">or</p>
+            <button type="button" id="selectFileBtn" class="btn btn-primary mb-3">Select file</button>
+            
+            <div class="text-muted small">
+                <p class="mb-1">Max. filesize: 100 MB</p>
+                <p class="mb-0">Supported file formats: PDF, PNG, JPG, BMP</p>
+            </div>
+
+            <!-- Filename preview with white background and border (hidden initially) -->
+            <div id="drop-selected-container" class="d-none mt-3">
+                <div class="border border-secondary rounded bg-white p-3">
+                    <p id="drop-selected" class="text-primary mb-0"></p>
+                </div>
+            </div>
+
+            <!-- Hidden file input -->
+            <input type="file" id="fileInput" name="file" class="d-none" accept=".pdf,.png,.jpg,.jpeg,.bmp" required>
+        </div>
+
+
+        <div class="mb-3">
+            <label class="form-label">Document Title (optional)</label>
+            <input type="text" name="title" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Year (optional)</label>
+            <input type="number" name="year" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Type (optional)</label>
+            <select name="type" class="form-select">
+                <option value="">-- no selection --</option>
+                <option value="training_regulation">Training regulation</option>
+                <option value="curriculum">Curriculum</option>
+                <option value="systematic_listing">Systematic Listing</option>
+                <option value="job_profile">Job profile</option>
+                <option value="other">Other VET document</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+            Upload
+        </button>
+
+    </form>
+
+    <!-- Drag & Drop Script -->
+    <script>
+        const dropArea = document.getElementById("drop-area");
+        const fileInput = document.getElementById("fileInput");
+        const selectFileBtn = document.getElementById("selectFileBtn");
+        const selectedContainer = document.getElementById("drop-selected-container");
+        const selectedText = document.getElementById("drop-selected");
+        const defaultText = document.getElementById("drop-text-default");
+
+        // Clicking drop area triggers file chooser
+        dropArea.addEventListener("click", (e) => {
+            // Don't trigger if clicking the button itself
+            if (e.target !== selectFileBtn && !selectFileBtn.contains(e.target)) {
+                fileInput.click();
+            }
+        });
+
+        // Select file button triggers file chooser
+        selectFileBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+
+        // Highlight on dragover
+        dropArea.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropArea.classList.add("dragover");
+        });
+
+        // Remove highlight on dragleave
+        dropArea.addEventListener("dragleave", () => {
+            dropArea.classList.remove("dragover");
+        });
+
+        // When dropping a file
+        dropArea.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropArea.classList.remove("dragover");
+
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                showSelectedFile(e.dataTransfer.files[0].name);
+            }
+        });
+
+        // When selecting via file dialog
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+                showSelectedFile(fileInput.files[0].name);
+            }
+        });
+
+        // Show file name and update appearance
+        function showSelectedFile(filename) {
+            selectedContainer.classList.remove("d-none");  // show container with border
+            selectedText.textContent = filename;
+            dropArea.classList.remove("dragover");
+        }
+    </script>
+
+
+{% endblock %}

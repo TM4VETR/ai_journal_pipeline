@@ -1,7 +1,5 @@
 # Processing and Linking Vocational Documents
 
-*This repository will be made public.*
-
 This repository contains the code (for both the document processing pipeline and evaluation) for our article "Processing and Linking Vocational Documents" in the AI special issue *Integrating Data Sources for Smarter Interdisciplinary AI Solutions: Challenges and Opportunities*, MDPI, 2026.
 
 ## Overview

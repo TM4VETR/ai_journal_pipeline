@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2 class="mb-4">Results</h2>
+
+    <p><b>Document ID:</b> {{ doc_id }}</p>
+
+    <!-- Document Processing (OCR Results) -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Page Images</h4>
+        </div>
+        <div class="card-body">
+            {% if not pages %}
+                <div>No OCR results yet. Processing may still be running.</div>
+            {% else %}
+                {% for page in pages %}
+                    <img src="{{ page }}" class="img-fluid border" style="max-width: 200px; margin: 5px;"
+                         alt="OCR page image">
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- NER and Occupation Coding -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Named Entity Recognition &amp; Occupation Coding</h4>
+        </div>
+        <div class="card-body">
+            {% if not results_data %}
+                <div>No NER / Occupation Coding results available.</div>
+            {% else %}
+                {% for page_id, entries in results_data.items() %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            Page {{ page_id }}
+                        </div>
+
+                        <div class="card-body">
+                            {% if entries %}
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Job ID</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in entries %}
+                                        <tr>
+                                            <td>
+                        <span class="badge bg-info text-dark">
+                          {{ item.job_title }}
+                        </span>
+                                            </td>
+                                            <td>
+                                                {% if item.job_id != "NA" %}
+                                                    <span class="badge bg-success">
+                            {{ item.job_id }}
+                          </span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">N/A</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p class="text-muted">No job titles found on this page.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

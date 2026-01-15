@@ -1,0 +1,127 @@
+services:
+  ocr4all:
+    image: uniwuezpd/ocr4all:latest
+    container_name: ocr4all
+    user: "0:0"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ocr4all/data:/var/ocr4all/data
+      - ./custom:/opt/custom
+    environment:
+      OCR4ALL_DATA_DIR: "/var/ocr4all/data"
+      CUSTOM_PIPELINE: "/opt/custom/custom_pipeline.py"
+      NEO4J_URI: "bolt://neo4j:7687"
+      NEO4J_USER: "${NEO4J_USER}"
+      NEO4J_PASS: "${NEO4J_PASS}"
+    depends_on:
+      - neo4j
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/ocr4all/ >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+      start_period: 20s
+
+  neo4j:
+    image: neo4j:5.20
+    container_name: neo4j
+    ports:
+      - "7474:7474"  # Browser
+      - "7687:7687"  # Bolt protocol
+    environment:
+      NEO4J_AUTH: "${NEO4J_USER}/${NEO4J_PASS}"
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      NEO4J_dbms_security_auth__minimum__password__length: 8
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_apoc_export_file_enabled: "true"
+    volumes:
+      - ./neo4j/data:/data
+      - ./neo4j/conf:/conf
+      - ./neo4j/export:/var/lib/neo4j/import
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u $NEO4J_USER -p $NEO4J_PASS 'RETURN 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  runner:
+    build:
+      context: ./custom
+    container_name: runner
+    restart: "unless-stopped"
+    depends_on:
+      ocr4all:
+        condition: service_healthy
+      neo4j:
+        condition: service_started
+    command: python3 /opt/custom/runner.py
+    volumes:
+      - ./custom:/opt/custom
+      - ./ocr4all/data:/var/ocr4all/data
+    environment:
+      PYTHONUNBUFFERED: "1"
+
+      # Runner watches uploads here
+      OCR4ALL_INPUT: "/var/ocr4all/data/default/input"
+
+      # Runner creates per-doc projects under here
+      OCR4ALL_DATA_ROOT: "/var/ocr4all/data"
+
+      # Runner calls this pipeline for each doc
+      PIPELINE_SCRIPT: "/opt/custom/pipeline.py"
+
+      # OCR4all API wiring (runner/pipeline call OCR4all inside the compose network)
+      OCR4ALL_BASE_URL: "http://ocr4all:8080/ocr4all"
+      OCR4ALL_IMAGE_TYPE: "Original"
+
+      # Auto-PDF conversion settings (match overview.jsp)
+      OCR4ALL_PDF_DPI: "300"
+      OCR4ALL_DELETE_BLANK: "true"
+      
+      # Model ("checkpoint")
+      OCR4ALL_CHECKPOINT: "default/default/deep3_antiqua-hist"
+
+      # Optional tuning
+      POLL_SECONDS: "1.0"
+
+      # Neo4j wiring for downstream steps
+      NEO4J_URI: "bolt://neo4j:7687"
+      NEO4J_USER: "${NEO4J_USER}"
+      NEO4J_PASS: "${NEO4J_PASS}"
+
+  graph-init:
+    build:
+      context: ./custom
+    container_name: graph-init
+    restart: "no"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    command: >
+      sh -c "
+      python3 /opt/custom/initialize_graph.py &&
+      echo 'Knowledge Graph initialized'
+      "
+    volumes:
+      - ./custom:/opt/custom
+      - ./ocr4all/data:/var/ocr4all/data
+    environment:
+      NEO4J_URI: "bolt://neo4j:7687"
+      NEO4J_USER: "${NEO4J_USER}"
+      NEO4J_PASS: "${NEO4J_PASS}"
+
+  webapp:
+    build:
+      context: ./webapp
+    container_name: webapp
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./webapp:/opt/webapp
+      - ./ocr4all/data:/var/ocr4all/data
+    environment:
+      FLASK_ENV: "development"
+      FLASK_APP: "app.py"
+      OCR4ALL_INPUT_DIR: "/var/ocr4all/data/default/input"
+    command: flask run --host=0.0.0.0 --port=5000

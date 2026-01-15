@@ -1,0 +1,63 @@
+:root {
+    --brand-primary: #13788a;
+
+    /* Bootstrap overrides */
+    --bs-primary: var(--brand-primary);
+    --bs-primary-rgb: 19, 120, 138;
+
+    --bs-link-color: var(--brand-primary);
+    --bs-link-hover-color: #0f5e6d;
+    --bs-focus-ring-color: rgba(19, 120, 138, 0.25);
+
+    --bs-alert-bg: rgba(191, 194, 194, 0.3);
+    --bs-alert-border-color: #BFC2C2FF
+}
+
+body {
+    padding-bottom: 50px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+h2 {
+    font-weight: 600;
+}
+
+/* Base drop area style */
+#drop-area {
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+    border-style: dashed !important;
+}
+
+/* Highlight when dragging over */
+#drop-area.dragover {
+    background-color: rgba(19, 120, 138, 0.10) !important; /* uses your primary color */
+    border-color: #13788a !important;
+    transform: scale(1.01);
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--brand-primary);
+    --bs-btn-border-color: var(--brand-primary);
+
+    --bs-btn-hover-bg: #0f5e6d;
+    --bs-btn-hover-border-color: #0f5e6d;
+
+    --bs-btn-active-bg: #0c4a56;
+    --bs-btn-active-border-color: #0c4a56;
+
+    --bs-btn-disabled-bg: var(--brand-primary);
+    --bs-btn-disabled-border-color: var(--brand-primary);
+}
+
+.form-label {
+    font-weight: 650;
+}
+
+.bg-info {
+    background-color: #0d454f !important;
+    color: white !important;
+}

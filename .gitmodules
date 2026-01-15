@@ -1,0 +1,6 @@
+[submodule "custom/oc"]
+	path = custom/oc
+	url = https://github.com/TM4VETR/occupation_coding_python.git
+[submodule "custom/ocr4all_ajax"]
+	path = custom/ocr4all_ajax
+	url = https://github.com/alexander-esser/ocr4all-ajax-client

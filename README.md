@@ -1,6 +1,6 @@
 # Processing and Linking Vocational Documents
 
-This repository contains the code (for both the document processing pipeline and evaluation) for our article "Processing and Linking Vocational Documents" in the AI special issue *Integrating Data Sources for Smarter Interdisciplinary AI Solutions: Challenges and Opportunities*, MDPI, 2026.
+This repository contains the code (for both the document processing pipeline and evaluation) for our article "Processing and Linking Vocational Documents".
 
 ## Overview
 Our article describes the construction of a complete document processing pipeline for German Vocational Education and Training (VET) documents, beginning with document preprocessing, via information extraction, to linking the document to an ontology in form of a knowledge graph.  
@@ -14,14 +14,13 @@ If you use this code, please cite:
 @article{Esser2026Processing,
   title        = {Processing and Linking Vocational Documents},
   author       = {Esser, Alexander M. and Reiser, Thomas},
-  journal      = {AI},
-  note         = {Special Issue: Integrating Data Sources for Smarter Interdisciplinary AI Solutions: Challenges and Opportunities},
+  journal      = {<ToDo>},
   year         = {2026},
-  publisher    = {MDPI},
-  volume       = {<volume>},
-  number       = {<issue>},
-  pages        = {<pages>},
-  doi          = {<DOI>},
+  publisher    = {<ToDo>},
+  volume       = {<ToDo>},
+  number       = {<ToDo>},
+  pages        = {<ToDo>},
+  doi          = {<ToDo>},
 }
 ```
 
